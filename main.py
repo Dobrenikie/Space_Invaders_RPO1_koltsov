@@ -25,7 +25,8 @@ def start_game():
     background = pygame.image.load("images/background.jpg")
     
     hero = Hero(screen)
-    bullets=[]
+    bullets = pygame.sprite.Group()
+    enemies = pygame.sprite.Group()
     
     clock = pygame.time.Clock()
     spawn_interval = 1000  # Интервал в миллисекундах между спавном врагов
@@ -52,10 +53,16 @@ def start_game():
             y = random.randint(-ENEMY_HEIGHT, 0)
             enemy = Enemy(x, y)
             enemies.add(enemy)
+            for bullet in bullets:
+                if pygame.sprite.spritecollide(bullet, enemies, True):
+                    bullets.remove(bullet)
         enemies.draw(screen)
     
     
     while flag:
+        hero.output_hero()   
+        if pygame.sprite.spritecollide(hero, enemies, True):
+            flag = False
         screen.blit(background, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -63,8 +70,8 @@ def start_game():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    bullet = Bullet(h.++ero.rect.centerx, hero.rect.top)
-                    bullets.append(bullet)
+                    bullet = Bullet(hero.rect.centerx, hero.rect.top)
+                    bullets.add(bullet)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
@@ -127,10 +134,10 @@ def start_game():
             enemy.update()
             screen.blit(enemy.image, enemy.rect)
 
-        hero.output_hero()
-
+        hero.output_hero()  
+  
         
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(50)
 
 start_game()
