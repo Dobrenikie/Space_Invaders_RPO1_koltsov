@@ -8,6 +8,9 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.speed = 2
+        self.score_value = 10
 
     def update(self):
-        self.rect.y += self.speed  
+        self.rect.y += self.speed
+    def blitme(self):
+        self.screen.blit(self.image, self.rect)

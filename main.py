@@ -23,6 +23,7 @@ def start_game():
     pygame.display.set_caption("Самая лучшая игра")
     
     background = pygame.image.load("images/background.jpg")
+    font = pygame.font.Font(None, 36)
     
     hero = Hero(screen)
     bullets = pygame.sprite.Group()
@@ -56,6 +57,8 @@ def start_game():
             for bullet in bullets:
                 if pygame.sprite.spritecollide(bullet, enemies, True):
                     bullets.remove(bullet)
+                    hero.score += enemy.score_value 
+                    
         enemies.draw(screen)
     
     
@@ -63,7 +66,13 @@ def start_game():
         hero.output_hero()   
         if pygame.sprite.spritecollide(hero, enemies, True):
             flag = False
+            
+        
+        
         screen.blit(background, (0, 0))
+        
+        
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 flag = False
@@ -135,8 +144,18 @@ def start_game():
             screen.blit(enemy.image, enemy.rect)
 
         hero.output_hero()  
-  
+
+        lives_text = font.render("Жизни: {}".format(hero.lives), True, (255, 255, 255)) # Отобразите текст с количеством жизней
+        screen.blit(lives_text, (10, 10)) # Отобразите текст с количеством жизней на экране
+        if pygame.sprite.spritecollide(hero, enemies, True):
+            hero.lives -= 1 # Уменьшите количество жизней при столкновении
+            if hero.lives <= 0:
+                flag = False
         
+
+        
+        
+        hero.draw_score()  # добавьте эту строку
         pygame.display.flip()
         clock.tick(50)
 
